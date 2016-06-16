@@ -29,14 +29,14 @@ public class HbaseHelper {
 
     /**
      * 增加和修改
-     * row 就是行键
-     * col 是列族
+     * rowKey 就是行键
+     * family 是列族
      * value 就是值
-     * field就是列限制符column:name
+     * qualifier就是列限制符column:name
      */
-    public void put( String row, String col, String value, String field ) {
-        Put p = new Put( Bytes.toBytes( row ) );
-        p.add(Bytes.toBytes( col ), Bytes.toBytes( field ), Bytes.toBytes( value ));
+    public void put( String rowKey, String family, String value, String qualifier ) {
+        Put p = new Put( Bytes.toBytes( rowKey ) );
+        p.add(Bytes.toBytes( family ), Bytes.toBytes( qualifier ), Bytes.toBytes( value ));
         try {
             table.put(p);
         } catch (InterruptedIOException e) {
@@ -48,10 +48,11 @@ public class HbaseHelper {
 
     /**
      * 删除
+     * rowKey 行键
      */
-    public void delete( String row ){
+    public void delete( String rowKey ){
         List list = new ArrayList();
-        Delete d1 = new Delete(row.getBytes());
+        Delete d1 = new Delete(rowKey.getBytes());
         list.add(d1);
         try {
             table.delete( list );
@@ -62,33 +63,32 @@ public class HbaseHelper {
 
     /**
      * 单条查询
-     * row 就是行键
-     * col 是列族
-     * field就是列限制符column:name
+     * rowKey 就是行键
+     * family 是列族
+     * qualifier就是列限制符column:name
      */
-    public void get(String row, String col, String field ) {
-        Get g = new Get( Bytes.toBytes( row ) );
+    public void get(String rowKey, String family, String qualifier ) {
+        Get g = new Get( Bytes.toBytes( rowKey ) );
         Result r = null;
         try {
             r = table.get( g );
         } catch (IOException e) {
             e.printStackTrace();
         }
-        byte [] value = r.getValue(Bytes.toBytes( col ), Bytes.toBytes( field ));
+        byte [] value = r.getValue(Bytes.toBytes( family ), Bytes.toBytes( qualifier ));
         String valueStr = Bytes.toString(value);
         System.out.println("GET: " + valueStr);
     }
 
     /**
      * 多条查询
-     * row 就是行键
-     * col 是列族
-     * field就是列限制符column:name
+     * family 是列族
+     * qualifier 就是列限制符column:name
      */
-    public void scan( String col, String field, Long limit ) {
+    public void scan( String family, String qualifier, Long limit ) {
         Scan s = new Scan();
         s.setFilter( new PageFilter( limit ) );
-        s.addColumn(Bytes.toBytes( col ), Bytes.toBytes( field ));
+        s.addColumn(Bytes.toBytes( family ), Bytes.toBytes( qualifier ));
         ResultScanner scanner = null;
         try {
             scanner = table.getScanner(s);
