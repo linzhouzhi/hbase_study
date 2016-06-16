@@ -7,8 +7,9 @@ package com.mycompany.app;
 public class App {
     public static void main( String[] args ) {
         HbaseHelper helper = new HbaseHelper();
-        //helper.insert( "rk008", "c1", "hello insert3", "f5" );
-        //helper.get( "rk008", "c1", "" );
-        helper.getAll( "c1", "", (long) 100);
+        helper.put( "rk008", "c1", "hello put put", "f5" );
+        helper.get( "rk008", "c1", "" );
+        helper.delete( "rk004" );
+        helper.scan( "c1", "", (long) 100);
     }
 }
