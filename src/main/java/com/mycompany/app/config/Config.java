@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.app.config;
 
 
 import org.apache.commons.configuration.Configuration;
@@ -14,7 +14,7 @@ public class Config {
     private org.apache.hadoop.conf.Configuration HConfig;
 
     public Config() {
-        String resource = "/home/lzz/work/idea_work/hadoop_work/hbase_demo/src/main/java/com/mycompany/app/hbase_config.xml";
+        String resource = "/home/lzz/work/idea_work/hadoop_work/hbase_demo/src/main/java/com/mycompany/app/config/hbase_config.xml";
         Configuration config = null;
         try {
             config = new XMLConfiguration(resource);

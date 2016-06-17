@@ -1,15 +1,16 @@
-package com.mycompany.app;
+package com.mycompany.app.service;
 
+import com.mycompany.app.config.Config;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.PageFilter;
+import org.apache.hadoop.hbase.util.Bytes;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.filter.PageFilter;
-import org.apache.hadoop.hbase.util.Bytes;
 /**
  * Created by lzz on 6/15/16
  * Hbase 操作类
@@ -34,7 +35,7 @@ public class HbaseHelper {
      * value 就是值
      * qualifier就是列限制符column:name
      */
-    public void put( String rowKey, String family, String value, String qualifier ) {
+    public static void put( String rowKey, String family, String value, String qualifier ) {
         Put p = new Put( Bytes.toBytes( rowKey ) );
         p.add(Bytes.toBytes( family ), Bytes.toBytes( qualifier ), Bytes.toBytes( value ));
         try {
@@ -50,7 +51,7 @@ public class HbaseHelper {
      * 删除
      * rowKey 行键
      */
-    public void delete( String rowKey ){
+    public static void delete( String rowKey ){
         List list = new ArrayList();
         Delete d1 = new Delete(rowKey.getBytes());
         list.add(d1);
@@ -67,7 +68,7 @@ public class HbaseHelper {
      * family 是列族
      * qualifier就是列限制符column:name
      */
-    public void get(String rowKey, String family, String qualifier ) {
+    public static void get(String rowKey, String family, String qualifier ) {
         Get g = new Get( Bytes.toBytes( rowKey ) );
         Result r = null;
         try {
@@ -85,7 +86,7 @@ public class HbaseHelper {
      * family 是列族
      * qualifier 就是列限制符column:name
      */
-    public void scan( String family, String qualifier, Long limit ) {
+    public static void scan( String family, String qualifier, Long limit ) {
         Scan s = new Scan();
         s.setFilter( new PageFilter( limit ) );
         s.addColumn(Bytes.toBytes( family ), Bytes.toBytes( qualifier ));

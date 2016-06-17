@@ -1,4 +1,4 @@
-package com.mycompany.app;
+package com.mycompany.app.service;
 
 import org.junit.*;
 
@@ -7,11 +7,11 @@ import org.junit.*;
  */
 public class HbaseHelperTest {
 
-    static HbaseHelper helper;
+    static com.mycompany.app.service.HbaseHelper helper;
 
     @BeforeClass
     public static void setUp(){
-        helper = new HbaseHelper();
+        helper = new com.mycompany.app.service.HbaseHelper();
     }
 
     @Before
@@ -23,15 +23,21 @@ public class HbaseHelperTest {
         System.out.printf("after");
     }
 
-    @Test
+    @Test(timeout = 3000)
     public void testGet(){
-        helper.get( "rk008", "c1", "" );
+        helper.get( "rk004", "", "" );
         //System.out.printf("hello wolrd" + helper.toString() );
     }
 
     @Test
     public void testHello(){
         System.out.printf("helo");
+    }
+
+    @Ignore
+    @Test
+    public  void testIgnore(){
+        System.out.printf("test ignore");
     }
 
     @AfterClass
