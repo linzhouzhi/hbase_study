@@ -3,13 +3,13 @@ package com.mycompany.app.service;
 import com.mycompany.app.config.Config;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by lzz on 6/15/16
@@ -21,8 +21,11 @@ public class HbaseHelper {
     static {
         Config HConfig = new Config();
         config = HConfig.getHConfig();
+    }
+
+    public HbaseHelper( String table ){
         try {
-            table = new HTable(config, "user");
+            this.table = new HTable(config, table);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,7 +38,35 @@ public class HbaseHelper {
      * value 就是值
      * qualifier就是列限制符column:name
      */
-    public static void put( String rowKey, String family, String value, String qualifier ) {
+    public void put( String rowKey, String family, Map map ) {
+        Put p = new Put( Bytes.toBytes( rowKey ) );
+        //获取所有的key
+        Set keys = map.keySet();
+        Iterator iter = keys.iterator();
+
+        do {
+            String key = (String)iter.next();
+            String value = (String) map.get(key);
+            p.add(Bytes.toBytes( family ), Bytes.toBytes( key ), Bytes.toBytes( value ));
+        }while ( iter.hasNext() );
+
+        try {
+            table.put(p);
+        } catch (InterruptedIOException e) {
+            e.printStackTrace();
+        } catch (RetriesExhaustedWithDetailsException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 单个增加和修改
+     * rowKey 就是行键
+     * family 是列族
+     * value 就是值
+     * qualifier就是列限制符column:name
+     */
+    public void put( String rowKey, String family, String value, String qualifier ) {
         Put p = new Put( Bytes.toBytes( rowKey ) );
         p.add(Bytes.toBytes( family ), Bytes.toBytes( qualifier ), Bytes.toBytes( value ));
         try {
@@ -51,7 +82,7 @@ public class HbaseHelper {
      * 删除
      * rowKey 行键
      */
-    public static void delete( String rowKey ){
+    public void delete( String rowKey ){
         List list = new ArrayList();
         Delete d1 = new Delete(rowKey.getBytes());
         list.add(d1);
@@ -68,7 +99,7 @@ public class HbaseHelper {
      * family 是列族
      * qualifier就是列限制符column:name
      */
-    public static void get(String rowKey, String family, String qualifier ) {
+    public  Result get( String rowKey ) {
         Get g = new Get( Bytes.toBytes( rowKey ) );
         Result r = null;
         try {
@@ -76,9 +107,7 @@ public class HbaseHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        byte [] value = r.getValue(Bytes.toBytes( family ), Bytes.toBytes( qualifier ));
-        String valueStr = Bytes.toString(value);
-        System.out.println("GET: " + valueStr);
+        return r;
     }
 
     /**
@@ -86,38 +115,26 @@ public class HbaseHelper {
      * family 是列族
      * qualifier 就是列限制符column:name
      */
-    public static void scan( String family, String qualifier, Long limit ) {
+    public List<String> getList( String family, Filter filter ) {
         Scan s = new Scan();
-        s.setFilter( new PageFilter( limit ) );
-        s.addColumn(Bytes.toBytes( family ), Bytes.toBytes( qualifier ));
+        s.setFilter(filter);
+        s.addFamily( Bytes.toBytes( family ) );
         ResultScanner scanner = null;
+        List<String> resultList = new ArrayList<String>();
         try {
             scanner = table.getScanner(s);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            // Scanners return Result instances.
-            // Now, for the actual iteration. One way is to use a while loop like so:
-            for (Result rr = scanner.next(); rr != null; rr = scanner.next()) {
-                byte[] row = rr.getRow();
+            for( Result rr : scanner ){
+                //byte[] row = rr.getRow();
                 byte[] value = rr.value();
                 String s_value = new String( value );
-                String s_row = new String( row );
-                System.out.println( s_row + " : " + s_value );
+                resultList.add( s_value );
             }
 
-            // The other approach is to use a foreach loop. Scanners are iterable!
-            // for (Result rr : scanner) {
-            //   System.out.println("Found row: " + rr);
-            // }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            // Make sure you close your scanners when you are done!
-            // Thats why we have it inside a try/finally clause
             scanner.close();
         }
+        return resultList;
     }
 }

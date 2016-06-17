@@ -7,8 +7,8 @@ value: {1:user_name,1:email,1:passwd}
 创建表：create 'user','f'
 
 2 weibo 表
-rowkey: md5(nick_name) + re_time(倒序时间)
-cf: info
+rowkey: md5(nick_name) + re_time(倒序时间Long.MAX_VALUE-当前时间)
+cf: f
 value: {user_name:content} (名字为key 微薄内容是value)
 创建表：create 'weibo','f'
 

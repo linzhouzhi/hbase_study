@@ -11,7 +11,7 @@ public class HbaseHelperTest {
 
     @BeforeClass
     public static void setUp(){
-        helper = new com.mycompany.app.service.HbaseHelper();
+        helper = new com.mycompany.app.service.HbaseHelper( "test" );
     }
 
     @Before
@@ -25,7 +25,7 @@ public class HbaseHelperTest {
 
     @Test(timeout = 3000)
     public void testGet(){
-        helper.get( "rk004", "", "" );
+        helper.get( "row1" );
         //System.out.printf("hello wolrd" + helper.toString() );
     }
 

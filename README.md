@@ -1,6 +1,18 @@
-# hbase_study
+#目录结构说明
 
-* hbase 常用命令
+com.mycompany.app/
+
+config : hbase配置文件信息
+
+service: hbase操作类为dao成提供服务
+
+weibo:   微薄项目
+
+    weibo/dao: 项目中每张表的数据访问对象层
+
+    weibo/readme.txt: 里面有详细介绍表的设计
+
+#hbase 常用命令
 
 1）创建表
 
@@ -106,17 +118,5 @@ table_help
 
 * hbase 例子可以在官网api中选择 Overview 下面有packages->org.apache.hadoop.hbase.client（点击就有啦）
 
-# 目录结构说明
 
-com.mycompany.app/
-
-config : hbase配置文件信息
-
-service: hbase操作类为dao成提供服务
-
-weibo:   微薄项目
-
-    weibo/dao: 项目中每张表的数据访问对象层
-
-    weibo/readme.txt: 里面有详细介绍表的设计
 
