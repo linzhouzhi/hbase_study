@@ -41,6 +41,12 @@ public class FollowsDAO {
         return list;
     }
 
+    public List<String> getFollowedList( String follower ){
+        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator( follower+"$" ) );
+        List<String> list = HBase.getList( COLUMN_FAMILY ,  filter );
+        return list;
+    }
+
     private String keyRow( String follower, String followed ){
         return follower + "_" + followed;
     }
