@@ -106,3 +106,13 @@ table_help
 
 * hbase 例子可以在官网api中选择 Overview 下面有packages->org.apache.hadoop.hbase.client（点击就有啦）
 
+# 目录结构说明
+
+com.mycompany.app/
+
+config : hbase配置文件信息
+
+service: hbase操作类为dao成提供服务
+
+weibo:   微薄项目
+
