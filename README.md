@@ -116,3 +116,7 @@ service: hbase操作类为dao成提供服务
 
 weibo:   微薄项目
 
+    weibo/dao: 项目中每张表的数据访问对象层
+
+    weibo/readme.txt: 里面有详细介绍表的设计
+
